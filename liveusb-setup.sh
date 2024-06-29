@@ -117,7 +117,7 @@ echo "fstab generated."
 
 # Copy chroot-setup.sh to the new system
 echo "Copying chroot-setup.sh to the new system..."
-cp chroot-setup.sh /mnt/root/
+cp chroot-setup.sh /mnt/scripts/chroot-setup.sh
 
 # Export environment variables for the chroot environment
 export ROOT_PASSWORD USER_NAME USER_PASSWORD HOSTNAME
@@ -129,7 +129,7 @@ export ROOT_PASSWORD='${ROOT_PASSWORD}'
 export USER_NAME='${USER_NAME}'
 export USER_PASSWORD='${USER_PASSWORD}'
 export HOSTNAME='${HOSTNAME}'
-/root/chroot-setup.sh
+/scripts/chroot-setup.sh
 "
 
 # Confirm reboot

@@ -30,6 +30,7 @@ pacman -S --noconfirm --needed \
     fzf \
     intel-gpu-tools \
     btop \
+    rsync \
     tldr \
     glances
 
