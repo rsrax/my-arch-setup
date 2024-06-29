@@ -115,21 +115,21 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "fstab generated."
 
-# Copy chroot-setup.sh to the new system
-echo "Copying chroot-setup.sh to the new system..."
-cp chroot-setup.sh /mnt/scripts/chroot-setup.sh
+# Copy chroot-script.sh to the new system
+echo "Copying chroot-script.sh to the new system..."
+cp chroot-script.sh /mnt/scripts/chroot-script.sh
 
 # Export environment variables for the chroot environment
 export ROOT_PASSWORD USER_NAME USER_PASSWORD HOSTNAME
 
-# Chroot into the new system and run the chroot-setup.sh script with environment variables
+# Chroot into the new system and run the chroot-script.sh script with environment variables
 echo "Chrooting into the new system..."
 arch-chroot /mnt /bin/bash -c "
 export ROOT_PASSWORD='${ROOT_PASSWORD}'
 export USER_NAME='${USER_NAME}'
 export USER_PASSWORD='${USER_PASSWORD}'
 export HOSTNAME='${HOSTNAME}'
-/scripts/chroot-setup.sh
+/scripts/chroot-script.sh
 "
 
 # Confirm reboot
