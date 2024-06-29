@@ -1,8 +1,18 @@
 #!/bin/bash
 
-# Install yay AUR helper
-cd /opt
-sudo git clone https://aur.archlinux.org/yay.git
-sudo chown -R $USER:$USER yay
+# Check if the script is running as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
+# Install yay
+echo "Installing yay..."
+sudo pacman -S --needed git base-devel
+git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
+cd ..
+rm -rf yay
+
+echo "yay installation complete."
