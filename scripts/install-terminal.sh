@@ -43,19 +43,19 @@ usermod --shell /bin/zsh $SUDO_USER
 # Copy zsh configuration
 echo "Copying zsh configuration..."
 mkdir -p /home/$SUDO_USER/.config
-cp /path/to/repository/configs/zshrc /home/$SUDO_USER/.zshrc
+cp ../configs/zshrc /home/$SUDO_USER/.zshrc
 chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.zshrc
 
 # Copy starship configuration
 echo "Copying starship configuration..."
 mkdir -p /home/$SUDO_USER/.config
-cp /path/to/repository/configs/starship.toml /home/$SUDO_USER/.config/starship.toml
+cp ../configs/starship.toml /home/$SUDO_USER/.config/starship.toml
 chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.config/starship.toml
 
 # Copy kitty configuration
 echo "Copying kitty configuration..."
 mkdir -p /home/$SUDO_USER/.config/kitty
-cp /path/to/repository/configs/kitty.conf /home/$SUDO_USER/.config/kitty/kitty.conf
+cp ../configs/kitty.conf /home/$SUDO_USER/.config/kitty/kitty.conf
 chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.config/kitty/kitty.conf
 
 echo "Terminal setup complete."
