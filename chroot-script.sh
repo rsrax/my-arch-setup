@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Set up time zone
+echo 'Setting up time zone...'
+ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
+hwclock --systohc
+
 # Set up locales
 echo 'Configuring locales...'
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
