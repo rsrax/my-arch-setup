@@ -45,10 +45,10 @@ while true; do
     Your Arch Linux Installation Companion
     \e[0m-------------------------------------"
 
-    is_installed_arch=$(detect_installed_arch)
+    is_live_usb=$(detect_live_usb)
 
     # Main Menu Options
-    if ! $is_installed_arch; then # If in live USB
+    if $is_live_usb; then # If in live USB
         display_menu_item 1 "Live USB Setup"
     else
         display_menu_item 1 "Primary Post-Install"
@@ -63,19 +63,19 @@ while true; do
     # Execute based on choice
     case $choice in
     1)
-        if ! $is_installed_arch; then
+        if $is_live_usb; then
             ./liveusb-setup.sh
         else
             ./post-install.sh primary
         fi
         ;;
     2)
-        if $is_installed_arch; then # If installed Arch
+        if ! $is_live_usb; then # If installed Arch
             ./post-install.sh secondary
         fi
         ;;
     3)
-        if $is_installed_arch; then
+        if ! $is_live_usb; then
             display_standalone_scripts_menu
         fi
         ;;
