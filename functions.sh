@@ -1,14 +1,11 @@
 #!/bin/bash
 
-# Function to detect if running on an installed Arch Linux system
-detect_installed_arch() {
-    root_device=$(findmnt -n -o SOURCE /) # Get the source device of the root filesystem
-
-    # Check if the root device is a block device (e.g., /dev/sda, /dev/nvme0n1)
-    if [[ $root_device == /dev/* ]]; then
-        return 0 # True (0) if installed Arch (root is on a block device)
+# Function to detect if running in a live USB environment
+detect_live_usb() {
+    if lsblk | grep -q "archiso"; then
+        return 0 # True (0) if in live USB
     else
-        return 1 # False (1) if not installed Arch (likely a live USB)
+        return 1 # False (1) if not in live USB
     fi
 }
 
