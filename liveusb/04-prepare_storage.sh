@@ -86,10 +86,16 @@ if [[ $mount_secondary == "y" || $mount_secondary == "Y" ]]; then
     secondary_disk=$(echo "$secondary_disk" | tr -d ' \t\r\n') # Trim whitespace
 
     # Validate secondary disk input
-    while [[ ! $secondary_disk =~ ^/dev/(nvme|sd|mmcblk)[0-9]+p?[0-9]*$ ]]; do # Case-insensitive, allows partitions too
-        echo "Invalid input. Please enter a valid disk or partition name (e.g., /dev/nvme0n1p1 or /dev/sda1)."
-        read -rp "Enter the secondary disk: " secondary_disk
+    while true; do
+        read -rp "Enter the secondary disk (e.g., /dev/sda1): " secondary_disk
         secondary_disk=$(echo "$secondary_disk" | tr -d ' \t\r\n') # Trim whitespace
+
+        # Validate secondary disk input
+        if lsblk -dpno NAME | grep -q "^$secondary_disk$"; then
+            break
+        else
+            echo "Invalid input. Please enter a valid disk name (e.g., /dev/sda1)."
+        fi
     done
 
     # Mount secondary disk (using the chosen $secondary_disk variable)
