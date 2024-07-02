@@ -11,7 +11,7 @@ echo "Installing yay..."
 sudo pacman -S --needed git base-devel
 sudo -u $SUDO_USER git clone https://aur.archlinux.org/yay.git
 cd yay
-makepkg -si
+sudo -u $SUDO_USER makepkg -si
 cd ..
 rm -rf yay
 

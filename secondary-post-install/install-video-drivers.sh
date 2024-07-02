@@ -30,7 +30,7 @@ pacman -S --noconfirm --needed \
 # Install Nvidia drivers and related packages
 echo "Installing Nvidia drivers and related packages..."
 pacman -S --noconfirm --needed \
-    nvidia-dkms \
+    nvidia \
     nvidia-utils \
     lib32-nvidia-utils
 

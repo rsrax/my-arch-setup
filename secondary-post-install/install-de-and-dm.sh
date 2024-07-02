@@ -23,9 +23,20 @@ pacman-key --finger 8F654886F17D497FEFE3DB448B15A6B0E9A3FA35
 pacman-key --lsign-key 8F654886F17D497FEFE3DB448B15A6B0E9A3FA35
 pacman-key --finger 8F654886F17D497FEFE3DB448B15A6B0E9A3FA35
 
-# Add the g14 repository to pacman.conf
-echo "Adding the g14 repository to pacman.conf..."
-echo -e "\n[g14]\nServer = https://arch.asus-linux.org" >> /etc/pacman.conf
+# Uncomment the g14 repository if it's commented out
+if grep -q "#\[g14\]" /etc/pacman.conf; then
+    echo "Uncommenting the g14 repository in pacman.conf..."
+    sed -i 's/#\[g14\]/\[g14\]/' /etc/pacman.conf
+    sed -i 's/#Server = https:\/\/arch.asus-linux.org/Server = https:\/\/arch.asus-linux.org/' /etc/pacman.conf
+fi
+
+# Check if the g14 repository is already added to pacman.conf
+if ! grep -q "\[g14\]" /etc/pacman.conf; then
+    echo "Adding the g14 repository to pacman.conf..."
+    echo -e "\n[g14]\nServer = https://arch.asus-linux.org" >> /etc/pacman.conf
+else
+    echo "The g14 repository is already added to pacman.conf."
+fi
 
 # Update the system with the new repository
 echo "Updating the system with the new repository..."
@@ -39,7 +50,6 @@ pacman -S --noconfirm --needed asusctl rog-control-center supergfxctl
 echo "Installing KDE Plasma and related applications..."
 pacman -S --noconfirm --needed \
     plasma \
-    kde-applications
 
 # Install additional recommended packages from Arch repository
 echo "Installing additional recommended packages from Arch repository..."
