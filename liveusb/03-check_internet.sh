@@ -1,10 +1,14 @@
 #!/bin/bash
 
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >>/tmp/arch_install.log
+}
+
 # Check internet connection
-echo "Checking internet connection..."
-if ping -c 5 archlinux.org &> /dev/null; then
-    echo "Internet connection is working."
+log "Checking internet connection..."
+if ping -c 5 archlinux.org &>/dev/null; then
+    log "Internet connection is working."
 else
-    echo "Internet connection is not working. Please check your network settings."
+    log "Internet connection is not working. Please check your network settings."
     exit 1
 fi

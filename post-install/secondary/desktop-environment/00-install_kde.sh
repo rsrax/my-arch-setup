@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Check if the script is running as root
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root"
@@ -33,7 +31,7 @@ fi
 # Check if the g14 repository is already added to pacman.conf
 if ! grep -q "\[g14\]" /etc/pacman.conf; then
     echo "Adding the g14 repository to pacman.conf..."
-    echo -e "\n[g14]\nServer = https://arch.asus-linux.org" >> /etc/pacman.conf
+    echo -e "\n[g14]\nServer = https://arch.asus-linux.org" >>/etc/pacman.conf
 else
     echo "The g14 repository is already added to pacman.conf."
 fi
@@ -49,7 +47,7 @@ pacman -S --noconfirm --needed asusctl rog-control-center supergfxctl
 # Install KDE Plasma and related applications
 echo "Installing KDE Plasma and related applications..."
 pacman -S --noconfirm --needed \
-    plasma \
+    plasma
 
 # Install additional recommended packages from Arch repository
 echo "Installing additional recommended packages from Arch repository..."

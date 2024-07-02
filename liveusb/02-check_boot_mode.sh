@@ -1,15 +1,19 @@
 #!/bin/bash
 
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >>/tmp/arch_install.log
+}
+
 # Check if in UEFI mode
-echo "Checking if the system is in UEFI mode..."
+log "Checking if the system is in UEFI mode..."
 if [ -d /sys/firmware/efi ]; then
     if [ $(cat /sys/firmware/efi/fw_platform_size) -eq 64 ]; then
-        echo "UEFI mode detected (64-bit)"
+        log "UEFI mode detected (64-bit)"
     elif [ $(cat /sys/firmware/efi/fw_platform_size) -eq 32 ]; then
-        echo "UEFI mode detected (32-bit)"
+        log "UEFI mode detected (32-bit)"
     else
-        echo "Unknown UEFI mode"
+        log "Unknown UEFI mode"
     fi
 else
-    echo "BIOS mode detected"
+    log "BIOS mode detected"
 fi

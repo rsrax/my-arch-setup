@@ -9,7 +9,7 @@ fi
 # Enable the multilib repository
 echo "Enabling multilib repository..."
 if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
-    echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
+    echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >>/etc/pacman.conf
 else
     sed -i '/\[multilib\]/{n;s/^#Include/Include/}' /etc/pacman.conf
 fi
