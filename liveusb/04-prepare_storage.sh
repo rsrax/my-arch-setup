@@ -16,10 +16,16 @@ read -rp "Enter the primary disk (e.g., /dev/nvme0n1): " primary_disk
 primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
 
 # Validate primary disk input
-while [[ ! $primary_disk =~ ^/dev/(nvme|sd|mmcblk)[0-9]+p?[0-9]*$ ]]; do # Case-insensitive, allows partitions too
-    echo "Invalid input. Please enter a valid disk name (e.g., /dev/nvme0n1 or /dev/sda)."
-    read -rp "Enter the primary disk: " primary_disk
+while true; do
+    read -rp "Enter the primary disk (e.g., /dev/nvme0n1): " primary_disk
     primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
+
+    # Validate primary disk input
+    if lsblk -dpno NAME | grep -q "^$primary_disk$"; then
+        break
+    else
+        echo "Invalid input. Please enter a valid disk name (e.g., /dev/nvme0n1 or /dev/sda)."
+    fi
 done
 
 # Partition and format primary disk (using the chosen $primary_disk variable)
