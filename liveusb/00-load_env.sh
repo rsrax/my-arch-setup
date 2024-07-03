@@ -18,3 +18,9 @@ if [[ "$ROOT_PASSWORD" == "changeme_root_password" || "$USER_NAME" == "changeme_
     log "Error: One or more environment variables in .env are using default values. Please update the .env file with your specific values."
     exit 1
 fi
+
+# Export the variables for use in other scripts
+export ROOT_PASSWORD
+export USER_NAME
+export USER_PASSWORD
+export HOSTNAME

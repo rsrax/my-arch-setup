@@ -17,15 +17,15 @@ primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
 
 # Validate primary disk input
 while true; do
-    read -rp "Enter the primary disk (e.g., /dev/nvme0n1): " primary_disk
-    primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
-
     # Validate primary disk input
     if lsblk -dpno NAME | grep -q "^$primary_disk$"; then
         break
     else
         echo "Invalid input. Please enter a valid disk name (e.g., /dev/nvme0n1 or /dev/sda)."
     fi
+
+    read -rp "Enter the primary disk (e.g., /dev/nvme0n1): " primary_disk
+    primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
 done
 
 # Partition and format primary disk (using the chosen $primary_disk variable)

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Get the directory of the arch_menu.sh script
+SCRIPT_DIR=$(realpath "${0%/*}")
+
+# Change the current working directory to the script's directory
+cd "$SCRIPT_DIR"
+
 source functions.sh
 
 # Check if .env file exists and is valid
@@ -70,7 +76,7 @@ while true; do
         fi
         ;;
     2)
-        if ! $is_live_usb; then # If installed Arch
+        if ! $is_live_usb; then
             ./post-install.sh secondary
         fi
         ;;
