@@ -12,100 +12,96 @@ list_disks() {
 # Select primary disk
 log "Available disks:"
 list_disks
-read -rp "Enter the primary disk (e.g., /dev/nvme0n1): " primary_disk
-primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
 
-# Validate primary disk input
+# Ensure the user enters a valid primary disk
 while true; do
+    read -rp "Enter the primary disk (e.g., /dev/nvme0n1): " primary_disk
+    primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
+
     # Validate primary disk input
     if lsblk -dpno NAME | grep -q "^$primary_disk$"; then
         break
     else
         echo "Invalid input. Please enter a valid disk name (e.g., /dev/nvme0n1 or /dev/sda)."
     fi
-
-    read -rp "Enter the primary disk (e.g., /dev/nvme0n1): " primary_disk
-    primary_disk=$(echo "$primary_disk" | tr -d ' \t\r\n') # Trim whitespace
 done
 
-# Partition and format primary disk (using the chosen $primary_disk variable)
+# Forcefully unmount any existing mounts on the primary disk
+log "Unmounting any existing mounts on $primary_disk..."
+umount -R "$primary_disk" || log "Warning: Failed to unmount some partitions. Proceeding anyway."
+
+# Wipe existing data and create new partition table
+log "Wiping existing data and creating new partition table on $primary_disk..."
+dd if=/dev/zero of="$primary_disk" bs=512 count=1 oflag=direct,dsync # Wipe the first sector
+wipefs -a "$primary_disk"                                            # Wipe all signatures
+sgdisk -Zo "$primary_disk"                                           # Create a new GPT partition table
+log "Wiping and partitioning complete."
+
+# Partition and format primary disk
 log "Partitioning the disk..."
-parted "$primary_disk" --script mklabel gpt mkpart ESP fat32 1MiB 1GiB set 1 esp on mkpart primary linux-swap 1GiB 17GiB mkpart primary btrfs 17GiB 100% || {
-    log "Error partitioning disk!"
-    exit 1
-}
-log "Partitioning complete."
+parted "$primary_disk" --script \
+    mklabel gpt \
+    mkpart ESP fat32 1MiB 1GiB set 1 esp on \
+    mkpart primary linux-swap 1GiB 17GiB \
+    mkpart primary btrfs 17GiB 100%
 
 log "Formatting partitions..."
-mkfs.fat -F32 "${primary_disk}p1" || {
-    log "Error formatting EFI partition!"
-    exit 1
-}
-mkswap "${primary_disk}p2" || {
-    log "Error formatting swap partition!"
-    exit 1
-}
-mkfs.btrfs "${primary_disk}p3" || {
-    log "Error formatting root partition!"
-    exit 1
-}
-log "Formatting complete."
+mkfs.fat -F32 "${primary_disk}p1"
+mkswap "${primary_disk}p2"
+mkfs.btrfs -f "${primary_disk}p3"
 
-# Mounting filesystems
+# Mount filesystems
 log "Mounting filesystems..."
-mount "${primary_disk}p3" /mnt || {
-    log "Error mounting root filesystem!"
-    exit 1
-}
+mount "${primary_disk}p3" /mnt
 mkdir -p /mnt/{home,efi}
-mount -o compress=zstd,subvol=@ "${primary_disk}p3" /mnt || {
-    log "Error mounting root subvolume!"
-    exit 1
-}
-mount -o compress=zstd,subvol=@home "${primary_disk}p3" /mnt/home || {
-    log "Error mounting home subvolume!"
-    exit 1
-}
-mount "${primary_disk}p1" /mnt/efi || {
-    log "Error mounting EFI partition!"
-    exit 1
-}
-swapon "${primary_disk}p2" || {
-    log "Error enabling swap!"
-    exit 1
-}
+
+# Create and mount Btrfs subvolumes
+log "Creating and mounting Btrfs subvolumes..."
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+umount /mnt
+
+mount -o compress=zstd,subvol=@ "${primary_disk}p3" /mnt
+mount -o compress=zstd,subvol=@home "${primary_disk}p3" /mnt/home
+mount "${primary_disk}p1" /mnt/efi
+swapon "${primary_disk}p2"
+
 log "Mounting complete."
 
 # Select secondary disk (optional)
-read -p "Do you want to mount a secondary disk? (y/n): " mount_secondary
-
-if [[ $mount_secondary == "y" || $mount_secondary == "Y" ]]; then
-    log "Available disks:"
-    list_disks
-    read -rp "Enter the secondary disk (e.g., /dev/sda1): " secondary_disk
-    secondary_disk=$(echo "$secondary_disk" | tr -d ' \t\r\n') # Trim whitespace
-
-    # Validate secondary disk input
-    while true; do
+while true; do
+    read -rp "Do you want to mount a secondary disk? (y/n): " mount_secondary
+    case $mount_secondary in
+    [Yy]*)
+        log "Available disks:"
+        list_disks
         read -rp "Enter the secondary disk (e.g., /dev/sda1): " secondary_disk
         secondary_disk=$(echo "$secondary_disk" | tr -d ' \t\r\n') # Trim whitespace
 
         # Validate secondary disk input
-        if lsblk -dpno NAME | grep -q "^$secondary_disk$"; then
-            break
-        else
-            echo "Invalid input. Please enter a valid disk name (e.g., /dev/sda1)."
-        fi
-    done
+        while [[ ! $secondary_disk =~ ^/dev/(nvme|sd|mmcblk)[0-9]+p?[0-9]*$ ]]; do # Case-insensitive, allows partitions too
+            echo "Invalid input. Please enter a valid disk or partition name (e.g., /dev/nvme0n1p1 or /dev/sda1)."
+            read -rp "Enter the secondary disk: " secondary_disk
+            secondary_disk=$(echo "$secondary_disk" | tr -d ' \t\r\n') # Trim whitespace
+        done
 
-    # Mount secondary disk (using the chosen $secondary_disk variable)
-    log "Mounting secondary disk..."
-    mkdir -p /mnt/mnt/pdata
-    mount "$secondary_disk" /mnt/mnt/pdata || {
-        log "Error mounting secondary disk!"
-        exit 1
-    }
-    log "Secondary disk mounted."
-fi
+        # Forcefully unmount any existing mounts on the secondary disk (if applicable)
+        log "Unmounting any existing mounts on $secondary_disk..."
+        umount -R "$secondary_disk" || log "Warning: Failed to unmount some partitions. Proceeding anyway."
+
+        # Mount secondary disk (using the chosen $secondary_disk variable)
+        log "Mounting secondary disk..."
+        mkdir -p /mnt/mnt/pdata
+        mount "${secondary_disk}1" /mnt/mnt/pdata || {
+            log "Error mounting secondary disk!"
+            exit 1
+        }
+        log "Secondary disk mounted."
+        break
+        ;;
+    [Nn]*) break ;;
+    *) echo "Please answer yes or no." ;;
+    esac
+done
 
 log "Partitioning and mounting complete."
