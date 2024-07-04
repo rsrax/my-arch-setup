@@ -72,13 +72,9 @@ sudo pacman -S --noconfirm --needed \
     baloo-widgets \
     dolphin-plugins \
     ffmpegthumbs \
-    kdeconnect-kde \
+    kdeconnect \
     kdegraphics-thumbnailers \
     kio-extras \
-    phonon-vlc \
-    qt-imageformats \
-    noto-sans \
-    noto-color-emoji \
     power-profiles-daemon \
     switcheroo-control || {
     log "Error installing additional packages"
@@ -104,11 +100,15 @@ sudo systemctl enable switcheroo-control.service || {
 
 # Install and enable SDDM
 log "Installing and enabling SDDM..."
-sudo pacman -S --noconfirm --needed sddm sddm-kcm || {
+sudo pacman -S --noconfirm --needed sddm || {
     log "Error installing SDDM"
 }
 sudo systemctl enable sddm || {
     log "Error enabling SDDM"
+}
+
+sudo pacman -S --noconfirm --needed sddm-kcm || {
+    log "Error installing SDDM-KCM"
 }
 
 log "KDE Plasma, additional packages, and SDDM installation complete."

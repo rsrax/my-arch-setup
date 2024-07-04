@@ -24,7 +24,7 @@ sudo pacman -S --noconfirm --needed \
     wine \
     mangohud \
     goverlay \
-    gamemode \  || {
+    gamemode || {
     log "Error installing gaming tools and applications"
 }
 

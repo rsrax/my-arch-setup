@@ -104,18 +104,18 @@ elif [[ $task_type == "secondary" ]]; then
     # Display menu to choose post-install tasks
     while true; do
         echo "Choose post-install tasks to run:"
-        display_menu_item 1 "Install Desktop Environment"
-        display_menu_item 2 "Install Video Drivers"
+        display_menu_item 1 "Install Video Drivers"
+        display_menu_item 2 "Install Desktop Environment"
         display_menu_item 3 "Install Additional Applications"
         display_menu_item 4 "All of the above"
         display_menu_item 5 "Skip"
         read -p "Enter your choice: " choice
         case $choice in
         1)
-            install_desktop_environment
+            install_video_drivers
             ;;
         2)
-            install_video_drivers
+            install_desktop_environment
             ;;
         3)
             install_additional_applications
