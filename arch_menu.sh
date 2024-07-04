@@ -51,7 +51,7 @@ while true; do
     Your Arch Linux Installation Companion
     \e[0m-------------------------------------"
 
-    is_live_usb=$(detect_live_usb)
+    is_live_usb=detect_live_usb
 
     # Main Menu Options
     if $is_live_usb; then # If in live USB
