@@ -84,10 +84,10 @@ sudo pacman -S --noconfirm --needed \
     log "Error installing additional packages"
 }
 
-# Install Google Chrome from AUR
-log "Installing Google Chrome from AUR..."
-sudo -u $SUDO_USER yay -S google-chrome --noconfirm --needed || {
-    log "Error installing Google Chrome"
+# Install Google Chrome and Octopi from AUR
+log "Installing Google Chrome and Octopi from AUR..."
+sudo -u $SUDO_USER yay -S google-chrome octopi --noconfirm --needed || {
+    log "Error installing Google Chrome and Octopi"
 }
 
 # Enable necessary services
