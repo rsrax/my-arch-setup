@@ -27,20 +27,15 @@ sudo pacman -S --noconfirm --needed \
     thunderbird \
     github-cli \
     qbittorrent \
-    weechat || {
+    weechat \
+    spotify-launcher || {
     log "Error installing productivity tools"
 }
 
 # Install Visual Studio Code Insiders from AUR
 log "Installing Visual Studio Code Insiders from AUR..."
-sudo -u $SUDO_USER yay -S visual-studio-code-bin --noconfirm || {
+sudo -u $SUDO_USER yay -S visual-studio-code-insiders-bin spicetify-cli --noconfirm || {
     log "Error installing Visual Studio Code Insiders"
-}
-
-# Install Vesktop and Spotify via Flatpak
-log "Installing Vesktop and Spotify via Flatpak..."
-flatpak install flathub dev.vencord.Vesktop com.spotify.Client -y || {
-    log "Error installing Vesktop and Spotify from Flatpak"
 }
 
 log "Productivity tools installation complete."
