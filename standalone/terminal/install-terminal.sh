@@ -34,65 +34,58 @@ TERMINAL_PACKAGES=(
     "zsh-history-substring-search"
     "pkgfile"
     "ttf-firacode-nerd"
+    "ttf-jetbrains-mono"
 )
 
 for package in "${TERMINAL_PACKAGES[@]}"; do
-    pacman -S --noconfirm --needed "$package" || {
+    sudo pacman -S --noconfirm --needed "$package" || {
         log "Error installing $package"
-        exit 1
     }
 done
 
 # Set default shell to zsh for the user
 log "Setting default shell to zsh for the user..."
-usermod --shell /bin/zsh "$SUDO_USER" || {
+sudo usermod --shell /usr/bin/zsh "$SUDO_USER" || {
     log "Error setting default shell to zsh"
-    exit 1
 }
 
 # Copy zsh configuration
 log "Copying zsh configuration..."
-mkdir -p /home/"$SUDO_USER"/.config || {
+sudo mkdir -p /home/"$SUDO_USER"/.config || {
     log "Error creating .config directory"
-    exit 1
 }
-cp ../configs/zshrc /home/"$SUDO_USER"/.zshrc || {
+sudo cp ./configs/zshrc /home/"$SUDO_USER"/.zshrc || {
     log "Error copying zshrc"
-    exit 1
 }
-chown "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/.zshrc || {
+sudo touch /home/"$SUDO_USER"/.zhistory || {
+    log "Error creating zhistory"
+}
+sudo chown "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/.zshrc || {
     log "Error changing ownership of zshrc"
-    exit 1
 }
 
 # Copy starship configuration
 log "Copying starship configuration..."
-mkdir -p /home/"$SUDO_USER"/.config || {
+sudo mkdir -p /home/"$SUDO_USER"/.config || {
     log "Error creating .config directory"
-    exit 1
 }
-cp ../configs/starship.toml /home/"$SUDO_USER"/.config/starship.toml || {
+sudo cp ./configs/starship.toml /home/"$SUDO_USER"/.config/starship.toml || {
     log "Error copying starship.toml"
-    exit 1
 }
-chown -R "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/.config/starship.toml || {
+sudo chown -R "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/.config/starship.toml || {
     log "Error changing ownership of starship.toml"
-    exit 1
 }
 
 # Copy kitty configuration
 log "Copying kitty configuration..."
-mkdir -p /home/"$SUDO_USER"/.config/kitty || {
+sudo mkdir -p /home/"$SUDO_USER"/.config/kitty || {
     log "Error creating kitty config directory"
-    exit 1
 }
-cp ../configs/kitty.conf /home/"$SUDO_USER"/.config/kitty/kitty.conf || {
+sudo cp ./configs/kitty.conf /home/"$SUDO_USER"/.config/kitty/kitty.conf || {
     log "Error copying kitty.conf"
-    exit 1
 }
-chown -R "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/.config/kitty/kitty.conf || {
+sudo chown -R "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/.config/kitty/kitty.conf || {
     log "Error changing ownership of kitty.conf"
-    exit 1
 }
 
 log "Terminal setup complete."

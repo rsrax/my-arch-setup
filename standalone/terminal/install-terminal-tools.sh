@@ -12,17 +12,15 @@ fi
 
 # Update the system
 log "Updating the system..."
-pacman -Syu --noconfirm || {
+sudo pacman -Syu --noconfirm || {
     log "Error updating the system"
-    exit 1
 }
 
 # Run the terminal setup script (if needed)
 if ! command -v kitty &>/dev/null; then # Check if kitty is installed
     log "Kitty not found. Running the terminal setup script..."
-    bash install-terminal.sh || {
+    sudo bash ./standalone/terminal/install-terminal.sh || {
         log "Error running terminal setup script"
-        exit 1
     }
 fi
 
@@ -48,9 +46,8 @@ TERMINAL_TOOLS=(
 )
 
 for tool in "${TERMINAL_TOOLS[@]}"; do
-    pacman -S --noconfirm --needed "$tool" || {
+    sudo pacman -S --noconfirm --needed "$tool" || {
         log "Error installing $tool"
-        exit 1
     }
 done
 

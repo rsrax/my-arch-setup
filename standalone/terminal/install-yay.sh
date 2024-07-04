@@ -16,22 +16,21 @@ if ! command -v yay &>/dev/null; then
     log "Yay not found. Installing yay..."
     sudo pacman -S --needed git base-devel || {
         log "Error installing dependencies for Yay"
-        exit 1
     }
     sudo -u $SUDO_USER git clone https://aur.archlinux.org/yay.git || {
         log "Error cloning Yay repository"
-        exit 1
+    }
+    sudo chmod -R 777 yay || {
+        log "Error changing permissions for Yay directory"
     }
     cd yay || {
         log "Error navigating to Yay directory"
-        exit 1
     }
     sudo -u $SUDO_USER makepkg -si || {
         log "Error building and installing Yay"
-        exit 1
     }
     cd ..
-    rm -rf yay
+    sudo rm -rf yay
 else
     log "Yay is already installed. Skipping installation."
 fi

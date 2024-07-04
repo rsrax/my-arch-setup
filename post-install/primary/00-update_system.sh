@@ -2,4 +2,4 @@
 
 # Update the system
 echo "Updating the system..."
-pacman -Syu --noconfirm
+sudo pacman -Syu --noconfirm

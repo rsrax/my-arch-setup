@@ -1,67 +1,38 @@
 #!/bin/bash
 
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >>/tmp/arch_install.log
+}
+
 # Check if the script is running as root
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root"
     exit 1
 fi
 
-# Enable the multilib repository
-echo "Enabling multilib repository..."
-if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
-    echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >>/etc/pacman.conf
-else
-    sed -i '/\[multilib\]/{n;s/^#Include/Include/}' /etc/pacman.conf
+# Check if SUDO_USER is set
+if [ -z "$SUDO_USER" ]; then
+    echo "SUDO_USER is not set. Please run this script using sudo."
+    exit 1
 fi
 
 # Update the system
-echo "Updating the system..."
-pacman -Syu --noconfirm
+log "Updating the system..."
+sudo pacman -Syu --noconfirm || {
+    log "Error updating the system"
+}
 
-# Install Intel graphics drivers
-echo "Installing Intel graphics drivers..."
-pacman -S --noconfirm --needed \
-    mesa \
-    lib32-mesa \
-    xorg-server \
-    vulkan-intel \
-    lib32-vulkan-intel
+# Enable Flatpak support
+log "Enabling Flatpak support..."
+./standalone/enable-flatpak.sh || { log "Error enabling Flatpak"; }
 
-# Install Nvidia drivers and related packages
-echo "Installing Nvidia drivers and related packages..."
-pacman -S --noconfirm --needed \
-    nvidia \
-    nvidia-utils \
-    lib32-nvidia-utils
+# Install terminal tools
+./standalone/terminal/install-terminal-tools.sh || { log "Error installing terminal tools"; }
 
-# Install Nvidia settings
-echo "Installing Nvidia settings..."
-pacman -S --noconfirm nvidia-settings
+# Install productivity tools
+./standalone/install-productivity-tools.sh || { log "Error installing productivity tools"; }
 
-# Set kernel parameter for Nvidia DRM
-echo "Setting kernel parameter for Nvidia DRM..."
-sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="/&nvidia-drm.modeset=1 /' /etc/default/grub
-grub-mkconfig -o /boot/grub/grub.cfg
+# Install gaming tools
+./standalone/install-gaming-tools.sh || { log "Error installing gaming tools"; }
 
-# Add early loading of Nvidia modules
-echo "Adding early loading of Nvidia modules..."
-sed -i 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm /' /etc/mkinitcpio.conf
-sed -i 's/ kms / /' /etc/mkinitcpio.conf
-mkinitcpio -P
-
-# Copy the Nvidia hook to the appropriate directory
-echo "Adding Pacman hook for Nvidia..."
-mkdir -p /etc/pacman.d/hooks
-cp ./configs/nvidia.hook /etc/pacman.d/hooks/
-
-echo "Intel and Nvidia drivers installation complete."
-
-# Confirm reboot
-read -p "The setup is complete. Do you want to reboot now? (y/n): " confirm_reboot
-
-if [[ $confirm_reboot == "y" || $confirm_reboot == "Y" ]]; then
-    echo "Rebooting the system..."
-    reboot
-else
-    echo "Reboot canceled. You can manually reboot later."
-fi
+log "Additional applications installation complete."

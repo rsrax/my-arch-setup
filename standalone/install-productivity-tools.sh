@@ -12,37 +12,35 @@ fi
 
 # Update the system
 log "Updating the system..."
-pacman -Syu --noconfirm || {
+sudo pacman -Syu --noconfirm || {
     log "Error updating the system"
-    exit 1
 }
 
 # Install productivity tools
 log "Installing productivity tools..."
-pacman -S --noconfirm --needed \
+sudo pacman -S --noconfirm --needed \
     vlc \
     gimp \
     libreoffice-fresh \
     firefox \
     keepassxc \
     thunderbird \
-    github-cli || {
+    github-cli \
+    qbittorrent \
+    weechat || {
     log "Error installing productivity tools"
-    exit 1
 }
 
 # Install Visual Studio Code Insiders from AUR
 log "Installing Visual Studio Code Insiders from AUR..."
 sudo -u $SUDO_USER yay -S visual-studio-code-bin --noconfirm || {
     log "Error installing Visual Studio Code Insiders"
-    exit 1
 }
 
-# Install Vesktop (instead of Discord) via Flatpak
-log "Installing Vesktop via Flatpak..."
-flatpak install flathub dev.vencord.Vesktop -y || {
-    log "Error installing Vesktop"
-    exit 1
+# Install Vesktop and Spotify via Flatpak
+log "Installing Vesktop and Spotify via Flatpak..."
+flatpak install flathub dev.vencord.Vesktop com.spotify.Client -y || {
+    log "Error installing Vesktop and Spotify from Flatpak"
 }
 
 log "Productivity tools installation complete."
