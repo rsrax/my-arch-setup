@@ -9,22 +9,22 @@ hwclock --systohc
 echo 'Configuring locales...'
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
-echo 'LANG=en_US.UTF-8' > /etc/locale.conf
+echo 'LANG=en_US.UTF-8' >/etc/locale.conf
 echo 'Locales configured.'
 
 # Set up keyboard layout
-echo 'KEYMAP=en' > /etc/vconsole.conf
+echo 'KEYMAP=en' >/etc/vconsole.conf
 echo 'Keyboard layout configured.'
 
 # Set up hostname
 echo 'Setting up hostname...'
-echo "${HOSTNAME}" > /etc/hostname
+echo "${HOSTNAME}" >/etc/hostname
 
 # Set up hosts file
 echo 'Configuring /etc/hosts...'
-echo '127.0.0.1 localhost' > /etc/hosts
-echo '::1 localhost' >> /etc/hosts
-echo "127.0.1.1 ${HOSTNAME}" >> /etc/hosts
+echo '127.0.0.1 localhost' >/etc/hosts
+echo '::1 localhost' >>/etc/hosts
+echo "127.0.1.1 ${HOSTNAME}" >>/etc/hosts
 echo '/etc/hosts configured.'
 
 # Set root password

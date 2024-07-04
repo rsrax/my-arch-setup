@@ -1,18 +1,17 @@
 #!/bin/bash
 
-# Load Helper Functions (assuming you have a 'functions.sh' script)
+# Load Helper Functions
 source functions.sh
 
 # Call each module script in order
-./modules/00-load_env.sh
-./modules/01-set_keyboard.sh
-./modules/02-check_boot_mode.sh
-./modules/03-check_internet.sh
-./modules/04-prepare_storage.sh
-./modules/05-install_base_system.sh
-./modules/06-generate_fstab.sh
-./modules/07-chroot_and_configure.sh
-./modules/08-confirm_reboot.sh
+./liveusb/01-set_keyboard.sh
+./liveusb/02-check_boot_mode.sh
+./liveusb/03-check_internet.sh
+./liveusb/04-prepare_storage.sh
+./liveusb/05-install_base_system.sh
+./liveusb/06-generate_fstab.sh
+./liveusb/07-chroot_and_configure.sh
+./liveusb/08-confirm_reboot.sh
 
 # Handle potential errors
 if [ $? -ne 0 ]; then
