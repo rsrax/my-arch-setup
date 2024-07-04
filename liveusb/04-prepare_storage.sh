@@ -53,7 +53,6 @@ mkfs.btrfs -f "${primary_disk}p3"
 # Mount filesystems
 log "Mounting filesystems..."
 mount "${primary_disk}p3" /mnt
-mkdir -p /mnt/{home,efi}
 
 # Create and mount Btrfs subvolumes
 log "Creating and mounting Btrfs subvolumes..."
@@ -62,7 +61,9 @@ btrfs subvolume create /mnt/@home
 umount /mnt
 
 mount -o compress=zstd,subvol=@ "${primary_disk}p3" /mnt
+mkdir -p /mnt/home
 mount -o compress=zstd,subvol=@home "${primary_disk}p3" /mnt/home
+mkdir -p /mnt/efi
 mount "${primary_disk}p1" /mnt/efi
 swapon "${primary_disk}p2"
 
@@ -75,14 +76,18 @@ while true; do
     [Yy]*)
         log "Available disks:"
         list_disks
-        read -rp "Enter the secondary disk (e.g., /dev/sda1): " secondary_disk
-        secondary_disk=$(echo "$secondary_disk" | tr -d ' \t\r\n') # Trim whitespace
 
-        # Validate secondary disk input
-        while [[ ! $secondary_disk =~ ^/dev/(nvme|sd|mmcblk)[0-9]+p?[0-9]*$ ]]; do # Case-insensitive, allows partitions too
-            echo "Invalid input. Please enter a valid disk or partition name (e.g., /dev/nvme0n1p1 or /dev/sda1)."
-            read -rp "Enter the secondary disk: " secondary_disk
+        # Ensure the user enters a valid secondary disk
+        while true; do
+            read -rp "Enter the secondary disk (e.g., /dev/sda): " secondary_disk
             secondary_disk=$(echo "$secondary_disk" | tr -d ' \t\r\n') # Trim whitespace
+
+            # Validate secondary disk input
+            if lsblk -dpno NAME | grep -q "^$secondary_disk$"; then
+                break
+            else
+                echo "Invalid input. Please enter a valid disk name (e.g., /dev/nvme0n1 or /dev/sda)."
+            fi
         done
 
         # Forcefully unmount any existing mounts on the secondary disk (if applicable)
@@ -94,7 +99,6 @@ while true; do
         mkdir -p /mnt/mnt/pdata
         mount "${secondary_disk}1" /mnt/mnt/pdata || {
             log "Error mounting secondary disk!"
-            exit 1
         }
         log "Secondary disk mounted."
         break
