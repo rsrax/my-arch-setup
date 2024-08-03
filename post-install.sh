@@ -24,14 +24,19 @@ install_desktop_environment() {
     while true; do
         echo "Choose a desktop environment to install:"
         display_menu_item 1 "KDE Plasma"
-        display_menu_item 2 "Skip (Install manually later)"
+        display_menu_item 2 "GNOME" # Add the GNOME option
+        display_menu_item 3 "Skip (Install manually later)"
         read -p "Enter your choice: " choice_de
         case $choice_de in
         1)
             bash post-install/secondary/desktop-environment/00-install_kde.sh || { log "Error installing KDE Plasma"; }
             break
             ;;
-        2) break ;;
+        2)
+            bash post-install/secondary/desktop-environment/01-install_gnome.sh || { log "Error installing GNOME"; } # Call the new GNOME installation script
+            break
+            ;;
+        3) break ;;
         *) echo "Invalid choice." ;;
         esac
     done
