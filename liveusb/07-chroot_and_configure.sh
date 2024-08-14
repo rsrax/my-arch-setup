@@ -1,7 +1,7 @@
 #!/bin/bash
 
 log() {
-    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >>/tmp/arch_install.log
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >>./arch_install.log
 }
 
 # Check if .env file exists and is valid
