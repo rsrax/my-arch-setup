@@ -2,9 +2,16 @@
 
 # Edit grub-btrfsd service
 echo "Configuring grub-btrfsd service..."
-sudo sed -i 's/^ExecStart=\s*/ExecStart=\/usr/bin\/grub-btrfsd --syslog --timeshift-auto/' /etc/systemd/system/grub-btrfsd.service
+# Ensure the 'drop-in' directory exists
+sudo mkdir -p /etc/systemd/system/grub-btrfsd.service.d/
 
-# Reload systemd daemon to apply changes
+# Create the override file with desired configuration
+cat <<EOF | sudo tee /etc/systemd/system/grub-btrfsd.service.d/override.conf
+[Service]
+ExecStart=/usr/bin/grub-btrfsd --syslog --timeshift-auto
+EOF
+
+# Reload systemd daemon to apply the changes
 sudo systemctl daemon-reload
 
 # Enable grub-btrfsd service to run on boot
