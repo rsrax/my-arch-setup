@@ -18,7 +18,7 @@ sudo pacman -Syu --noconfirm || {
 
 # Install productivity tools
 log "Installing productivity tools..."
-sudo pacman -S --noconfirm --needed \
+yay -Sy --noconfirm --needed \
     vlc \
     gimp \
     libreoffice-fresh \
@@ -27,15 +27,11 @@ sudo pacman -S --noconfirm --needed \
     thunderbird \
     github-cli \
     qbittorrent \
-    weechat \
-    spotify-launcher || {
+    hexchat \
+    spotify-launcher \
+    visual-studio-code-insiders-bin \
+    spicetify-cli || {
     log "Error installing productivity tools"
-}
-
-# Install Visual Studio Code Insiders from AUR
-log "Installing Visual Studio Code Insiders from AUR..."
-sudo -u $SUDO_USER yay -S visual-studio-code-insiders-bin spicetify-cli --noconfirm || {
-    log "Error installing Visual Studio Code Insiders"
 }
 
 log "Productivity tools installation complete."

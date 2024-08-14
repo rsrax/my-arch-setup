@@ -20,11 +20,9 @@ sudo pacman -Syu --noconfirm || {
 log "Installing additional terminal UI tools..."
 TERMINAL_TOOLS=(
     "zsh"
-    "exa"
     "bat"
     "ugrep"
     "hwinfo"
-    "expac"
     "mcfly"
     "pkgfile"
     "ttf-firacode-nerd"
@@ -34,14 +32,9 @@ TERMINAL_TOOLS=(
     "curl"
     "wget"
     "tmux"
-    "ncdu"
-    "ripgrep"
-    "fd"
-    "intel-gpu-tools"
     "btop"
     "rsync"
     "tldr"
-    "glances"
 )
 
 for tool in "${TERMINAL_TOOLS[@]}"; do

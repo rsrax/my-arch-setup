@@ -57,8 +57,6 @@ sudo pacman -S --noconfirm --needed asusctl rog-control-center supergfxctl || {
 log "Installing KDE Plasma and related applications..."
 sudo pacman -S --noconfirm --needed \
     plasma \
-    kde-education \
-    kde-games \
     kde-graphics \
     kde-pim \
     kde-utilities \
@@ -80,10 +78,10 @@ sudo pacman -S --noconfirm --needed \
     log "Error installing additional packages"
 }
 
-# Install Google Chrome and Octopi from AUR
-log "Installing Google Chrome and Octopi from AUR..."
-sudo -u $SUDO_USER yay -S google-chrome octopi --noconfirm --needed || {
-    log "Error installing Google Chrome and Octopi"
+# Install Google Chrome from AUR
+log "Installing Google Chrome from AUR..."
+sudo -u $SUDO_USER yay -S google-chrome --noconfirm --needed || {
+    log "Error installing Google Chrome"
 }
 
 # Enable necessary services

@@ -20,7 +20,6 @@ sudo pacman -Syu --noconfirm || {
 log "Installing gaming tools and applications..."
 sudo pacman -S --noconfirm --needed \
     steam \
-    lutris \
     wine \
     mangohud \
     goverlay \
@@ -30,7 +29,7 @@ sudo pacman -S --noconfirm --needed \
 
 # Install Proton GE Custom and asf from AUR
 log "Installing Proton GE Custom and asf from AUR..."
-sudo -u $SUDO_USER yay -S vesktop-bin heroic-games-launcher-bin proton-ge-custom asf asf-ui-git moonlight-qt sunshine --noconfirm --needed || {
+sudo -u $SUDO_USER yay -S vesktop-bin proton-ge-custom asf asf-ui-git moonlight-qt sunshine --noconfirm --needed || {
     log "Error installing Proton GE Custom, asf, moonlight-qt, and sunshine"
 }
 

@@ -7,7 +7,7 @@ log() {
 # Function to install Intel drivers
 install_intel_drivers() {
     log "Installing Intel graphics drivers..."
-    sudo pacman -S --noconfirm --needed mesa lib32-mesa xorg-server vulkan-intel lib32-vulkan-intel || {
+    sudo pacman -S --noconfirm --needed mesa lib32-mesa xorg-server vulkan-intel intel-media-driver lib32-vulkan-intel || {
         log "Error installing Intel drivers!"
     }
 }
